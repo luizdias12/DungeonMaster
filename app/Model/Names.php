@@ -1,8 +1,8 @@
 <?php
 
-namespace Model;
+namespace App\Model;
 
-use Model\DB;
+use App\Model\DB;
 use PDO;
 use PDOException;
 
