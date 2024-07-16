@@ -7,6 +7,4 @@ define('DIR_APP', __DIR__);
 
 require_once 'autoload.php';
 
-?>
-
 

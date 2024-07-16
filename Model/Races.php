@@ -21,14 +21,14 @@ class Races extends DB
 
     public static function create($data = array())
     {
-        if(count($data) > 0){
-            foreach($data as $key => $value) {
+        if (count($data) > 0) {
+            foreach ($data as $key => $value) {
                 $stmt = self::connect()->prepare("INSERT INTO races (race) VALUES (:race)");
                 $stmt->bindParam(':race', $value);
                 try {
                     $stmt->execute();
                     echo "New race \"{$value}\" inserted <br />";
-                } catch(PDOException $e){
+                } catch (PDOException $e) {
                     echo "Error on insert: {$e->getMessage()}";
                 }
             }
@@ -40,10 +40,10 @@ class Races extends DB
         $stmt = self::connect()->prepare("SELECT * FROM races WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                self::$collection[] = $row;
-            }
-            return self::$collection;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            self::$collection[] = $row;
+        }
+        return self::$collection;
     }
 
     public static function delete($id)
@@ -54,15 +54,15 @@ class Races extends DB
         try {
             $stmt->execute();
             echo "Race of id {$id} deleted <br />";
-        } catch(PDOException $e){
+        } catch (PDOException $e) {
             echo "Error on delete: {$e->getMessage()}";
         }
     }
 
     public static function dismantle($data = array())
     {
-        if(count($data) > 0){
-            foreach($data as $key => $value) {
+        if (count($data) > 0) {
+            foreach ($data as $key => $value) {
                 echo "$key :: $value <br />";
             }
         } else {
