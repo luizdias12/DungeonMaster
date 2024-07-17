@@ -2,7 +2,7 @@
 
 namespace Model;
 
-use Model\DB;
+use App\Model\DB;
 use PDO;
 use PDOException;
 
@@ -21,7 +21,7 @@ class Character extends DB
 
     public static function index()
     {
-        $stmt = self::connect()->query("SELECT * FROM temp_char");
+        $stmt = parent::connect()->query("SELECT * FROM temp_char");
         if ($stmt->rowCount()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 self::$collection[] = $row;
@@ -34,7 +34,7 @@ class Character extends DB
 
     public static function showChars()
     {
-        $stmt = self::connect()->query("SELECT c.name, g.gender, r.race
+        $stmt = parent::connect()->query("SELECT c.name, g.gender, r.race
         FROM temp_char c
         INNER JOIN gender g on g.id = c.gender_id
         INNER JOIN races r on r.id = c.race_id");
@@ -46,7 +46,7 @@ class Character extends DB
 
     public static function show($id)
     {
-        $stmt = self::connect()->prepare("SELECT * FROM temp_char WHERE id = :id");
+        $stmt = parent::connect()->prepare("SELECT * FROM temp_char WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -62,7 +62,7 @@ class Character extends DB
             $values = implode(",", $arr_v);
             $keys = implode(",", array_keys($data));
             try {
-                $stmt = self::connect()->exec("INSERT INTO temp_char ($keys) VALUES ($values)");
+                $stmt = parent::connect()->exec("INSERT INTO temp_char ($keys) VALUES ($values)");
                 echo "New char \"{$values}\" inserted <br />";
             } catch (PDOException $e) {
                 echo "Error on insert: {$e->getMessage()}";
@@ -73,7 +73,7 @@ class Character extends DB
 
     public static function delete($id)
     {
-        $stmt = self::connect()->prepare("DELETE FROM temp_char WHERE id = :id");
+        $stmt = parent::connect()->prepare("DELETE FROM temp_char WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         try {
