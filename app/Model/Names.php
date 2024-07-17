@@ -21,7 +21,7 @@ class Names extends DB
 
     public static function index()
     {
-        $stmt = self::connect()->query("SELECT * FROM names");
+        $stmt = parent::connect()->query("SELECT * FROM names");
         if ($stmt->rowCount()) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 self::$collection[] = $row;
@@ -34,7 +34,7 @@ class Names extends DB
 
     public static function showChars()
     {
-        $stmt = self::connect()->query("SELECT n.first_name, g.gender, r.race
+        $stmt = parent::connect()->query("SELECT n.first_name, g.gender, r.race
         FROM names n
         INNER JOIN gender g on g.id = n.gender_id
         INNER JOIN races r on r.id = n.race_id");
@@ -46,7 +46,7 @@ class Names extends DB
 
     public static function show($id)
     {
-        $stmt = self::connect()->prepare("SELECT * FROM names WHERE id = :id");
+        $stmt = parent::connect()->prepare("SELECT * FROM names WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -62,7 +62,7 @@ class Names extends DB
             $values = implode(",", $arr_v);
             $keys = implode(",", array_keys($data));
             try {
-                $stmt = self::connect()->exec("INSERT INTO names ($keys) VALUES ($values)");
+                parent::connect()->exec("INSERT INTO names ($keys) VALUES ($values)");
                 echo "New name \"{$values}\" inserted <br />";
             } catch (PDOException $e) {
                 echo "Error on insert: {$e->getMessage()}";
@@ -73,7 +73,7 @@ class Names extends DB
 
     public static function delete($id)
     {
-        $stmt = self::connect()->prepare("DELETE FROM names WHERE id = :id");
+        $stmt = parent::connect()->prepare("DELETE FROM names WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         try {
@@ -93,5 +93,31 @@ class Names extends DB
         } else {
             echo "The data array is empty";
         }
+    }
+
+    public static function countBy()
+    {
+        $stmt = parent::connect()->query("SELECT r.race, g.gender, COUNT(*) AS qtd
+        FROM names n
+        INNER JOIN gender g on g.id = n.gender_id
+        INNER JOIN races r on r.id = n.race_id
+        GROUP BY r.race, g.gender
+        ORDER BY r.race");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            self::$collection[] = $row;
+        }
+        return self::$collection;
+    }
+
+    public static function getRandomName($gender_id, $race_id)
+    {
+        $stmt = parent::connect()->prepare("SELECT first_name FROM names WHERE gender_id = :gender_id AND race_id = :race_id ORDER BY RAND() LIMIT 1");
+        $stmt->bindParam(':gender_id', $gender_id);
+        $stmt->bindParam(':race_id', $race_id);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            self::$collection[] = $row;
+        }
+        return self::$collection;
     }
 }

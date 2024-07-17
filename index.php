@@ -1,32 +1,35 @@
 <?php
 
-
 ini_set('display_errors', 1);
 
-define('DS', DIRECTORY_SEPARATOR);
-define('DIR_APP', __DIR__);
-
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Model\Names;
 use App\Model\Races;
+use App\Model\FamilyNames;
+use App\Model\Randomizer;
+use App\Model\Resources;
+use App\Model\Classes;
+use App\Model\Character;
 
-$races = Races::index();
-$names = Names::showChars();
+$a = Randomizer::randomChar();
+$keys = [$a[4]['key_ability'], $a[4]['key_ability_2']];
+
+Resources::checkKey($keys);
+
 echo "<pre>";
-print_r($names);
+print_r($a);
 echo "</pre>";
-// exit;
 
-//   $arrays = [];
-//   for ($i = 0; $i < count($names); $i++) {
-//     $arrays[] = [
-//       "gender_id" => 2,
-//       "race_id" => 1,
-//       "first_name" => $names[$i]
-//     ];
-//     Names::create($arrays[$i]);
-//   }
+$values = [];
+for($i=1;$i < 7;$i++)
+{
+    $d = Resources::rollDice();
+    $values[] = $d;
+}
 
+arsort($values);
 
-
+echo "<pre>";
+print_r($values);
+echo "</pre>";

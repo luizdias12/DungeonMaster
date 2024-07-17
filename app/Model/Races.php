@@ -69,5 +69,13 @@ class Races extends DB
             echo "The data is empty";
         }
     }
+
+    public static function getRandomRaceId()
+    {
+        $stmt = parent::connect()->query("SELECT id FROM races ORDER BY RAND() LIMIT 1");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['id'];
+        }
+    }
 }
 
