@@ -91,4 +91,19 @@ class Classes extends DB
         }
     }
 
+    public static function getData($id)
+    {
+        $stmt = parent::connect()->prepare("SELECT c.id, c.class, a1.ability_name key_ability, a2.ability_name key_ability_2
+            FROM classes c
+            INNER JOIN abilities a1 ON a1.id = c.key_ability
+            LEFT JOIN abilities a2 ON a2.id = c.key_ability_2
+            WHERE c.id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            self::$collection[] = $row;
+        }
+        return self::$collection;
+    }
+
 }

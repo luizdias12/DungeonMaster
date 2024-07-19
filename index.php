@@ -3,6 +3,7 @@
 ini_set('display_errors', 1);
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/resources/functions/functions.php';
 
 use App\Model\Names;
 use App\Model\Races;
@@ -11,25 +12,24 @@ use App\Model\Randomizer;
 use App\Model\Resources;
 use App\Model\Classes;
 use App\Model\Character;
+use App\Model\Gender;
 
 $a = Randomizer::randomChar();
-$keys = [$a[4]['key_ability'], $a[4]['key_ability_2']];
+// $map = $a[4];
+// $attr = $a[5];
+// $result = [];
 
-Resources::checkKey($keys);
+// foreach($map as $i => $k)
+// {
+//     $result[$k] = $attr[$i];
+// }
 
-echo "<pre>";
-print_r($a);
-echo "</pre>";
+dd($a);
 
-$values = [];
-for($i=1;$i < 7;$i++)
-{
-    $d = Resources::rollDice();
-    $values[] = $d;
-}
-
-arsort($values);
-
-echo "<pre>";
-print_r($values);
-echo "</pre>";
+// for($i=0;$i<count($names);$i++){
+//     $insert = array(
+//         "race_id" => 15,
+//         "last_name" => $names[$i]
+//     );
+//     FamilyNames::create($insert);
+// }
