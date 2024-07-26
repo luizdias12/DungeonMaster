@@ -10,7 +10,7 @@ class Randomizer
     private static $familyName;
     private static $class_id;
     private static $dices = [];
-    
+
     /**
      * gera valores para um personagem de forma aleatoria
      *
@@ -30,49 +30,62 @@ class Randomizer
             self::$familyName = FamilyNames::getRandomFamilyName(self::$race_id);
         }
 
-        for($i=1;$i < 7;$i++)
-        {
+        for ($i = 0; $i < 7; $i++) {
             $d = Resources::rollDice();
             self::$dices[] = $d;
         }
         arsort(self::$dices);
+        array_pop(self::$dices);
         self::$dices = array_values(self::$dices);
 
-        $map = MapClass::getData(self::$class_id); 
-        $map = $map[0];       
+        $map = MapClass::getData(self::$class_id);
+        $map = $map[0];
 
         $result = [];
-        foreach($map as $i => $k)
-        {
+        foreach ($map as $i => $k) {
             $result[$k] = self::$dices[$i];
         }
 
-        $attr[] = $result;
-        $perc[]['perc'] = self::randomFloat();
+        $perc = self::randomFloat();
 
-        return array_merge(
-            self::$name,
-            self::$familyName,
-            Gender::show(self::$gender_id),
-            Races::show(self::$race_id),
-            Classes::getData(self::$class_id),
-            $attr,
-            $perc
-            // $map,
-            // self::$attributes
-            // array_combine(
-            //     array_values(MapClass::getData(self::$class_id)),
-            //     self::$attributes
-            // )
-        );
+        if (empty(self::easterEgg($perc))) {
+            return array(
+                "first_name" => self::$name[0]['first_name'],
+                "last_name" => self::$familyName[0]['last_name'],
+                "gender" => Gender::show(self::$gender_id)[0]['gender'],
+                "race" => Races::show(self::$race_id)[0]['race'],
+                "class" => Classes::getData(self::$class_id)[0]['class'],
+                "category" => "Comum",
+                "perc" => $perc,
+                "attributes" => $result,
+            );
+        } else { 
+            return self::easterEgg($perc);
+        }
+
     }
 
-    public static function easterEgg($race_id, $gender_id)
+    public static function easterEgg($perc)
     {
-        
+        // dd(Specials::getRandomSpecialId($perc));
+        $data = Specials::getData(Specials::getRandomSpecialId($perc), $perc);
+        if(!empty($data)){
+            $attributes = array(
+                "Força" => $data["str"],
+                "Destreza" => $data["dex"],
+                "Constituição" => $data["con"],
+                "Inteligencia" => $data["int"],
+                "Sabedoria" => $data["wis"],
+                "Carisma" => $data["cha"]
+            );
+            unset($data["str"],$data["dex"],$data["con"],$data["int"],$data["wis"],$data["cha"]);
+            $data["attributes"] = $attributes;
+        }
+        return $data;
     }
 
-    public static function randomFloat($min = 0, $max = 100) {
+    public static function randomFloat($min = 0, $max = 100)
+    {
         $result = round($min + mt_rand() / mt_getrandmax() * ($max - $min), 1);
         return $result;
     }

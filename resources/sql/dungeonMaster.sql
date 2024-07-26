@@ -78,6 +78,21 @@ INSERT INTO `abilities_map_class` (`id`, `class_id`, `index_1`, `index_2`, `inde
 	(20, 11, 6, 3, 2, 5, 4, 1),
 	(21, 12, 4, 3, 2, 5, 6, 1);
 
+-- Copiando estrutura para tabela dungeonmaster.category
+CREATE TABLE IF NOT EXISTS `category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `category` varchar(50) NOT NULL DEFAULT '0',
+  `perc_ini` float NOT NULL DEFAULT '0',
+  `perc_final` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela dungeonmaster.category: ~3 rows (aproximadamente)
+INSERT INTO `category` (`id`, `category`, `perc_ini`, `perc_final`) VALUES
+	(1, 'Incomum', 6.1, 10),
+	(2, 'Raro', 2.6, 6),
+	(3, 'Lendário', 0, 2.5);
+
 -- Copiando estrutura para tabela dungeonmaster.classes
 CREATE TABLE IF NOT EXISTS `classes` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -667,6 +682,38 @@ INSERT INTO `races` (`id`, `race`) VALUES
 	(12, 'Tiefling'),
 	(14, 'Draconato'),
 	(15, 'Gnomo');
+
+-- Copiando estrutura para tabela dungeonmaster.specials
+CREATE TABLE IF NOT EXISTS `specials` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL DEFAULT '0',
+  `last_name` varchar(50) NOT NULL DEFAULT '0',
+  `race_id` int NOT NULL DEFAULT '0',
+  `gender_id` int NOT NULL DEFAULT '0',
+  `class_id` int NOT NULL DEFAULT '0',
+  `str` int NOT NULL DEFAULT '0',
+  `dex` int NOT NULL DEFAULT '0',
+  `con` int NOT NULL DEFAULT '0',
+  `int` int NOT NULL DEFAULT '0',
+  `wis` int NOT NULL DEFAULT '0',
+  `cha` int NOT NULL DEFAULT '0',
+  `category_id` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `FK_SPECIAL_CLASS` (`class_id`),
+  KEY `FK_SPECIAL_GENDER` (`gender_id`),
+  KEY `FK_SPECIAL_RACE` (`race_id`),
+  KEY `FK_SPECIAL_CATEGORY` (`category_id`),
+  CONSTRAINT `FK_SPECIAL_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  CONSTRAINT `FK_SPECIAL_CLASS` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`),
+  CONSTRAINT `FK_SPECIAL_GENDER` FOREIGN KEY (`gender_id`) REFERENCES `gender` (`id`),
+  CONSTRAINT `FK_SPECIAL_RACE` FOREIGN KEY (`race_id`) REFERENCES `races` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Copiando dados para a tabela dungeonmaster.specials: ~0 rows (aproximadamente)
+INSERT INTO `specials` (`id`, `first_name`, `last_name`, `race_id`, `gender_id`, `class_id`, `str`, `dex`, `con`, `int`, `wis`, `cha`, `category_id`) VALUES
+	(2, 'Frodo', 'Bolseiro', 6, 1, 9, 10, 16, 14, 14, 12, 12, 1),
+	(4, 'Geralt de Rivia', '', 3, 1, 11, 18, 16, 18, 16, 15, 18, 3),
+	(6, 'Harry', 'Potter', 3, 1, 12, 12, 14, 14, 18, 16, 18, 2);
 
 -- Copiando estrutura para tabela dungeonmaster.temp_char
 CREATE TABLE IF NOT EXISTS `temp_char` (
