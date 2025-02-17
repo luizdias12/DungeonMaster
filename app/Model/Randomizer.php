@@ -46,9 +46,29 @@ class Randomizer
             $result[$k] = self::$dices[$i];
         }
 
+        // echo self::$race_id . ", " . Races::show(self::$race_id)[0]['race'] . "<br>";
+        // dumper($map);
+        // dumper(self::$dices);
+
         $perc = self::randomFloat();
 
         if (empty(self::easterEgg($perc))) {
+            $order = ["Força", "Destreza", "Constituição", "Inteligência", "Sabedoria", "Carisma"];          
+            $ordered = [];
+
+            foreach ($order as $key) {
+                if (isset($result[$key])) {
+                    $ordered[$key] = $result[$key];
+                }
+            }
+            // dumper($ordered);
+            $race_map = MapRace::getData(self::$race_id);
+            // dumper($race_map);
+            $adjustedScores = handleRaceScore($race_map, $ordered);
+
+            // echo "atributos de retorno: <br>";
+            // dd($adjustedScores);
+
             return array(
                 "first_name" => self::$name[0]['first_name'],
                 "last_name" => self::$familyName[0]['last_name'],
@@ -57,7 +77,7 @@ class Randomizer
                 "class" => Classes::getData(self::$class_id)[0]['class'],
                 "category" => "Comum",
                 "perc" => $perc,
-                "attributes" => $result,
+                "attributes" => $adjustedScores,
             );
         } else { 
             return self::easterEgg($perc);
