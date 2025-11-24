@@ -6,6 +6,7 @@ class Randomizer
 {
     private static $gender_id;
     private static $race_id;
+    private static $subrace_id;
     private static $name;
     private static $familyName;
     private static $class_id;
@@ -18,8 +19,10 @@ class Randomizer
      */
     public static function randomChar()
     {
+        self::$dices = [];
         self::$gender_id = Gender::getRandomGenderId();
         self::$race_id = Races::getRandomRaceId();
+        self::$subrace_id = SubRaces::getRandomSubRaceId(self::$race_id);
         self::$class_id = Classes::getRandomClassId();
         self::$name = Names::getRandomName(self::$gender_id, self::$race_id);
         if (self::$race_id == 4) {
@@ -52,7 +55,8 @@ class Randomizer
 
         $perc = self::randomFloat();
 
-        if (empty(self::easterEgg($perc))) {
+        $egg = self::easterEgg($perc);
+        if (empty($egg)) {
             $order = ["Força", "Destreza", "Constituição", "Inteligência", "Sabedoria", "Carisma"];          
             $ordered = [];
 
@@ -70,17 +74,18 @@ class Randomizer
             // dd($adjustedScores);
 
             return array(
-                "first_name" => self::$name[0]['first_name'],
-                "last_name" => self::$familyName[0]['last_name'],
-                "gender" => Gender::show(self::$gender_id)[0]['gender'],
-                "race" => Races::show(self::$race_id)[0]['race'],
-                "class" => Classes::getData(self::$class_id)[0]['class'],
-                "category" => "Comum",
+                "nome" => self::$name[0]['first_name'],
+                "nome_familia" => self::$familyName[0]['last_name'],
+                "sexo" => Gender::show(self::$gender_id)[0]['gender'],
+                "raça" => Races::show(self::$race_id)[0]['race'],
+                "subraça" => SubRaces::show(self::$subrace_id)[0]['subrace'] ?? '',
+                "classe" => Classes::getData(self::$class_id)[0]['class'],
+                "categoria" => "Comum",
                 "perc" => $perc,
-                "attributes" => $adjustedScores,
+                "atributos" => $adjustedScores,
             );
         } else { 
-            return self::easterEgg($perc);
+            return $egg;
         }
 
     }

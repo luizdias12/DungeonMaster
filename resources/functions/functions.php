@@ -13,6 +13,13 @@ function dumper($array) {
     echo "</pre>";
 }
 
+function nd($value){
+    echo "<pre>";
+    print_r($value);
+    echo "</pre>";
+    exit;
+}
+
 function handleRaceScore($modifiers, $attributes) {
 
     // echo "atributos de entrada: <br>";
