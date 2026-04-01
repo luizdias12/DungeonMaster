@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="<?= asset('css/char.css') ?>">
-
 <section class="card">
     <h2><?= htmlspecialchars($character['nome']) ?> <?= htmlspecialchars($character['nome_familia']) ?></h2>
 
@@ -16,9 +14,26 @@
 
     <ul class="attributes">
         <?php foreach ($character['atributos'] as $atributo => $valor): ?>
+            <?php
+                $max = 20;
+                $percent = max(0, min(100, ($valor / $max) * 100));
+
+                $classBar = 'fill-low';
+                if ($valor >= 15) {
+                    $classBar = 'fill-high';
+                } elseif ($valor >= 10) {
+                    $classBar = 'fill-mid';
+                }
+            ?>
             <li>
-                <span><?= htmlspecialchars($atributo) ?></span>
-                <strong><?= htmlspecialchars((string) $valor) ?></strong>
+                <div class="attr-top">
+                    <span class="attr-name"><?= htmlspecialchars($atributo) ?></span>
+                    <strong class="attr-value"><?= htmlspecialchars((string) $valor) ?></strong>
+                </div>
+
+                <div class="attr-bar">
+                    <div class="attr-fill <?= $classBar ?>" data-width="<?= $percent ?>"></div>
+                </div>
             </li>
         <?php endforeach; ?>
     </ul>

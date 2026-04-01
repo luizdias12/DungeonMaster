@@ -17,6 +17,6 @@
     </main>
 
     <?php require basePath('app/View/partials/footer.php'); ?>
-
+    <script src="<?= asset('js/app.js') ?>"></script>
 </body>
 </html>

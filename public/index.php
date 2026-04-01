@@ -5,13 +5,12 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Controller\CharacterController;
+use App\Core\Router;
 
-$action = $_GET['action'] ?? 'random';
+$router = new Router();
 
-switch ($action) {
-    case 'random':
-    default:
-        (new CharacterController())->random();
-        break;
-}
+// carregar rotas
+require basePath('routes/web.php');
+
+// executar rota
+$router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

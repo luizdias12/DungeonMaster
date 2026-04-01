@@ -10,7 +10,7 @@ class CharacterController
     {
         $character = Randomizer::randomChar();
 
-        view('char', [
+        view('character', [
             'title' => 'Personagem aleatório',
             'character' => $character
         ]);
