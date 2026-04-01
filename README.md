@@ -24,7 +24,7 @@ DungeonMaster/
 │  ├─ css/
 │  ├─ js/
 │  └─ index.php
-├─ routes/
+├─ Routes/
 │  └─ web.php
 ├─ resources/
 │  └─ functions/
