@@ -10,7 +10,6 @@ class Randomizer
     private static $name;
     private static $familyName;
     private static $class_id;
-    private static $dices = [];
 
     /**
      * gera valores para um personagem de forma aleatoria
@@ -19,45 +18,41 @@ class Randomizer
      */
     public static function randomChar()
     {
-        self::$dices = [];
-        self::$gender_id = Gender::getRandomGenderId();
-        self::$race_id = Races::getRandomRaceId();
-        self::$subrace_id = SubRaces::getRandomSubRaceId(self::$race_id);
-        self::$class_id = Classes::getRandomClassId();
-        self::$name = Names::getRandomName(self::$gender_id, self::$race_id);
-        if (self::$race_id == 4) {
-            self::$familyName = FamilyNames::getRandomFamilyName(rand(2, 3));
-        } else if (self::$race_id == 5) {
-            self::$familyName[] = array('last_name' => '');
+        $dices = [];
+        $genderId = Gender::getRandomGenderId();
+        $raceId = Races::getRandomRaceId();
+        $subraceId = SubRaces::getRandomSubRaceId($raceId);
+        $classId = Classes::getRandomClassId();
+        $name = Names::getRandomName($genderId, $raceId);
+        if ($raceId == 4) {
+            $familyName = FamilyNames::getRandomFamilyName(rand(2, 3));
+        } elseif ($raceId == 5) {
+            $familyName = [['last_name' => '']];
         } else {
-            self::$familyName = FamilyNames::getRandomFamilyName(self::$race_id);
+            $familyName = FamilyNames::getRandomFamilyName($raceId);
         }
 
         for ($i = 0; $i < 7; $i++) {
             $d = Resources::rollDice();
-            self::$dices[] = $d;
+            $dices[] = $d;
         }
-        arsort(self::$dices);
-        array_pop(self::$dices);
-        self::$dices = array_values(self::$dices);
+        arsort($dices);
+        array_pop($dices);
+        $dices = array_values($dices);
 
-        $map = MapClass::getData(self::$class_id);
+        $map = MapClass::getData($classId);
         $map = $map[0];
 
         $result = [];
         foreach ($map as $i => $k) {
-            $result[$k] = self::$dices[$i];
+            $result[$k] = $dices[$i];
         }
 
-        // echo self::$race_id . ", " . Races::show(self::$race_id)[0]['race'] . "<br>";
-        // dumper($map);
-        // dumper(self::$dices);
-
         $perc = self::randomFloat();
-
         $egg = self::easterEgg($perc);
+
         if (empty($egg)) {
-            $order = ["Força", "Destreza", "Constituição", "Inteligência", "Sabedoria", "Carisma"];          
+            $order = ["Força", "Destreza", "Constituição", "Inteligência", "Sabedoria", "Carisma"];
             $ordered = [];
 
             foreach ($order as $key) {
@@ -65,48 +60,63 @@ class Randomizer
                     $ordered[$key] = $result[$key];
                 }
             }
-            // dumper($ordered);
-            $race_map = MapRace::getData(self::$race_id);
-            // dumper($race_map);
+
+            $race_map = MapRace::getData($raceId);
             $adjustedScores = handleRaceScore($race_map, $ordered);
 
-            // echo "atributos de retorno: <br>";
-            // dd($adjustedScores);
-
             return array(
-                "nome" => self::$name[0]['first_name'],
-                "nome_familia" => self::$familyName[0]['last_name'],
-                "sexo" => Gender::show(self::$gender_id)[0]['gender'],
-                "raça" => Races::show(self::$race_id)[0]['race'],
-                "subraça" => SubRaces::show(self::$subrace_id)[0]['subrace'] ?? '',
-                "classe" => Classes::getData(self::$class_id)[0]['class'],
+                "nome" => $name[0]['first_name'] ?? '',
+                "nome_familia" => $familyName[0]['last_name'] ?? '',
+                "genero" => Gender::show($genderId)[0]['gender'] ?? '',
+                "raça" => Races::show($raceId)[0]['race'] ?? '',
+                "subraça" => SubRaces::show($subraceId)[0]['subrace'] ?? '',
+                "classe" => Classes::getData($classId)[0]['class'] ?? '',
                 "categoria" => "Comum",
                 "perc" => $perc,
                 "atributos" => $adjustedScores,
             );
-        } else { 
-            return $egg;
+        } else {
+            return [];
         }
-
     }
 
     public static function easterEgg($perc)
     {
         // dd(Specials::getRandomSpecialId($perc));
         $data = Specials::getData(Specials::getRandomSpecialId($perc), $perc);
-        if(!empty($data)){
-            $attributes = array(
-                "Força" => $data["str"],
-                "Destreza" => $data["dex"],
-                "Constituição" => $data["con"],
-                "Inteligencia" => $data["int"],
-                "Sabedoria" => $data["wis"],
-                "Carisma" => $data["cha"]
-            );
-            unset($data["str"],$data["dex"],$data["con"],$data["int"],$data["wis"],$data["cha"]);
-            $data["attributes"] = $attributes;
+        if (empty($data)) {
+            return [];
         }
-        return $data;
+
+        $atributos = [
+            "Força" => $data["str"] ?? 0,
+            "Destreza" => $data["dex"] ?? 0,
+            "Constituição" => $data["con"] ?? 0,
+            "Inteligencia" => $data["int"] ?? 0,
+            "Sabedoria" => $data["wis"] ?? 0,
+            "Carisma" => $data["cha"] ?? 0
+        ];
+        
+        unset(
+            $data["str"],
+            $data["dex"],
+            $data["con"],
+            $data["int"],
+            $data["wis"],
+            $data["cha"]
+        );
+
+        return [
+            "nome" => $data["first_name"] ?? '',
+            "nome_familia" => $data["last_name"] ?? '',
+            "genero" => $data["gender"] ?? '',
+            "raça" => $data["race"] ?? '',
+            "subraça" => '',
+            "classe" => $data["class"] ?? '',
+            "categoria" => $data["category"] ?? '',
+            "perc" => $data["perc"] ?? '',
+            "atributos" => $atributos
+        ];
     }
 
     public static function randomFloat($min = 0, $max = 100)
@@ -114,5 +124,4 @@ class Randomizer
         $result = round($min + mt_rand() / mt_getrandmax() * ($max - $min), 1);
         return $result;
     }
-
 }

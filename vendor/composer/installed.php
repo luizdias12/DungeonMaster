@@ -3,7 +3,7 @@
         'name' => 'stingray/dungeonmaster',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9b985f486d89ebda36bfc1b4f5629a2d9a2829d7',
+        'reference' => '226a5e21d1f71181ff9663c4a0fa31ec72648958',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'stingray/dungeonmaster' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9b985f486d89ebda36bfc1b4f5629a2d9a2829d7',
+            'reference' => '226a5e21d1f71181ff9663c4a0fa31ec72648958',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
