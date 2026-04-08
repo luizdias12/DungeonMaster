@@ -8,60 +8,25 @@ use PDOException;
 
 class Classe extends DB
 {
-    private static $collection = [];
 
-    private static function formatStr($value)
+    public static function index(): array
     {
-        if (is_string($value)) {
-            return "'" . $value . "'";
-        } else {
-            return $value;
-        }
+        return self::findWhere('classes', []);
     }
 
-    public static function index()
+    public static function show(string $id): ?array
     {
-        $stmt = parent::connect()->query("SELECT * FROM classes");
-        if ($stmt->rowCount()) {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                self::$collection[] = $row;
-            }
-            return self::$collection;
-        } else {
-            echo "No data!";
-        }
-    }
-    public static function show($id)
-    {
-        $stmt = parent::connect()->prepare("SELECT * FROM classes WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            self::$collection[] = $row;
-        }
-        return self::$collection;
+        return self::findWhere('classes', ['id' => $id]);
     }
 
-    public static function create($data = [])
+    public static function create(array $data): ?int
     {
-        if (count($data) > 0) {
-            $arr_v = array_map("self::formatStr", array_values($data));
-            $values = implode(",", $arr_v);
-            $keys = implode(",", array_keys($data));
-            try {
-                parent::connect()->exec("INSERT INTO classes ($keys) VALUES ($values)");
-                echo "New class \"{$values}\" inserted <br />";
-            } catch (PDOException $e) {
-                echo "Error on insert: {$e->getMessage()}";
-            }
-        } else {
-            echo "The data array is empty";
-        }
+        return self::insert('classes', $data);
     }
 
     public static function delete($id)
     {
-        $stmt = parent::connect()->prepare("DELETE FROM class WHERE id = :id");
+        $stmt = parent::connect()->prepare("DELETE FROM classes WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         try {
@@ -72,38 +37,33 @@ class Classe extends DB
         }
     }
 
-    public static function dismantle($data = [])
+    public static function getRandomClassId(): ?int
     {
-        if (count($data) > 0) {
-            foreach ($data as $key => $value) {
-                echo "$key :: $value <br />";
-            }
-        } else {
-            echo "The data array is empty";
-        }
+        $sql = "
+            SELECT id FROM classes
+            WHERE id >= (
+                SELECT FLOOR(RAND() * (SELECT MAX(id) FROM classes))
+            )
+            ORDER BY id
+            LIMIT 1
+        ";
+
+        $row = self::first($sql);
+
+        return $row ? (int) $row['id'] : null;
     }
 
-    public static function getRandomClassId()
+    public static function getData(string $id): array
     {
-        $stmt = parent::connect()->query("SELECT id FROM classes ORDER BY RAND() LIMIT 1");
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row['id'];
-        }
-    }
-
-    public static function getData($id)
-    {
-        $stmt = parent::connect()->prepare("SELECT c.id, c.class, a1.ability_name key_ability, a2.ability_name key_ability_2
+        $sql = "
+            SELECT c.id, c.class, a1.ability_name key_ability, a2.ability_name key_ability_2
             FROM classes c
             INNER JOIN abilities a1 ON a1.id = c.key_ability
             LEFT JOIN abilities a2 ON a2.id = c.key_ability_2
-            WHERE c.id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            self::$collection[] = $row;
-        }
-        return self::$collection;
+            WHERE c.id = :id
+        ";
+
+        return self::first($sql, ['id' => $id]);
     }
 
 }
