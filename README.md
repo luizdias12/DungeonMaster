@@ -17,17 +17,18 @@ Gerador de personagens RPG desenvolvido em PHP com arquitetura MVC, sem uso de f
 DungeonMaster/
 ├─ app/
 │  ├─ Controller/
+│  ├─ Core/
+│  ├─ DTO/
 │  ├─ Model/
-│  ├─ View/
-│  └─ Core/
+│  └─ View/
 ├─ public/
 │  ├─ css/
 │  ├─ js/
 │  └─ index.php
-├─ Routes/
-│  └─ web.php
 ├─ resources/
 │  └─ functions/
+├─ routes/
+│  └─ web.php
 ├─ vendor/
 ├─ composer.json
 ```
@@ -69,9 +70,9 @@ Nome: Arannis
 Raça: Elfo
 Classe: Mago
 
-Força        ███████░░░
-Destreza     ██████████
-Inteligência ████████████
+Força               12
+Destreza            14
+Inteligência        17
 ```
 
 ## 👨‍💻 Autor
