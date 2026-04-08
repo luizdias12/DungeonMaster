@@ -26,15 +26,7 @@ class Classe extends DB
 
     public static function delete($id)
     {
-        $stmt = parent::connect()->prepare("DELETE FROM classes WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        try {
-            $stmt->execute();
-            echo "Class of id {$id} deleted <br />";
-        } catch (PDOException $e) {
-            echo "Error on delete: {$e->getMessage()}";
-        }
+        return self::deleteWhere('classes', ['id' => $id]);
     }
 
     public static function getRandomClassId(): ?int
