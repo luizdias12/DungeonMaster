@@ -2,11 +2,11 @@
 
 namespace App\Model;
 
-use App\Model\DB;
+use App\Core\DB;
 use PDO;
 use PDOException;
 
-class Classes extends DB
+class Classe extends DB
 {
     private static $collection = [];
 

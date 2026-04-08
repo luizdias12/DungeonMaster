@@ -7,7 +7,6 @@
         <div><strong>Sub-raça:</strong> <?= htmlspecialchars($character['subraça']) ?></div>
         <div><strong>Classe:</strong> <?= htmlspecialchars($character['classe']) ?></div>
         <div><strong>Categoria:</strong> <?= htmlspecialchars($character['categoria']) ?></div>
-        <!-- <div><strong>Chance:</strong> <?= htmlspecialchars((string) $character['perc']) ?>%</div> -->
     </div>
 
     <h3>Atributos</h3>

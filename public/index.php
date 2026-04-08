@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Sao_Paulo');
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -9,8 +10,6 @@ use App\Core\Router;
 
 $router = new Router();
 
-// carregar rotas
 require basePath('routes/web.php');
 
-// executar rota
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

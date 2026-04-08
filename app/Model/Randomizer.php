@@ -22,7 +22,7 @@ class Randomizer
         $genderId = Gender::getRandomGenderId();
         $raceId = Races::getRandomRaceId();
         $subraceId = SubRaces::getRandomSubRaceId($raceId);
-        $classId = Classes::getRandomClassId();
+        $classId = Classe::getRandomClassId();
         $name = Names::getRandomName($genderId, $raceId);
         if ($raceId == 4) {
             $familyName = FamilyNames::getRandomFamilyName(rand(2, 3));
@@ -70,7 +70,7 @@ class Randomizer
                 "genero" => Gender::show($genderId)[0]['gender'] ?? '',
                 "raça" => Races::show($raceId)[0]['race'] ?? '',
                 "subraça" => SubRaces::show($subraceId)[0]['subrace'] ?? '',
-                "classe" => Classes::getData($classId)[0]['class'] ?? '',
+                "classe" => Classe::getData($classId)[0]['class'] ?? '',
                 "categoria" => "Comum",
                 "perc" => $perc,
                 "atributos" => $adjustedScores,
